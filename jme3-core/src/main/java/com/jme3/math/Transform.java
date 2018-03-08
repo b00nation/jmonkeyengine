@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2017 jMonkeyEngine
+ * Copyright (c) 2009-2018 jMonkeyEngine
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -175,7 +175,7 @@ public final class Transform implements Savable, Cloneable, java.io.Serializable
 
     /**
      * Sets this matrix to the interpolation between the first matrix and the second by delta amount.
-     * @param t1 The begining transform.
+     * @param t1 The beginning transform.
      * @param t2 The ending transform.
      * @param delta An amount between 0 and 1 representing how far to interpolate from t1 to t2.
      */
@@ -186,27 +186,24 @@ public final class Transform implements Savable, Cloneable, java.io.Serializable
     }
 
     /**
-     * Changes the values of this matrix acording to it's parent.  Very similar to the concept of Node/Spatial transforms.
+     * Changes the values of this matrix according to its parent.  Very similar to the concept of Node/Spatial transforms.
      * @param parent The parent matrix.
      * @return This matrix, after combining.
      */
     public Transform combineWithParent(Transform parent) {
+        //applying parent scale to local scale
         scale.multLocal(parent.scale);
-//        rot.multLocal(parent.rot);
+        //applying parent rotation to local rotation.
         parent.rot.mult(rot, rot);
-
-        // This here, is evil code
-//        parent
-//            .rot
-//            .multLocal(translation)
-//            .multLocal(parent.scale)
-//            .addLocal(parent.translation);
-
+        //applying parent scale to local translation.
         translation.multLocal(parent.scale);
+        //applying parent rotation to local translation, then applying parent translation to local translation.
+        //Note that parent.rot.multLocal(translation) doesn't modify "parent.rot" but "translation"
         parent
             .rot
             .multLocal(translation)
             .addLocal(parent.translation);
+
         return this;
     }
 
@@ -248,7 +245,7 @@ public final class Transform implements Savable, Cloneable, java.io.Serializable
             store = new Vector3f();
 
         // The author of this code should look above and take the inverse of that
-        // But for some reason, they didnt ..
+        // But for some reason, they didn't ..
 //        in.subtract(translation, store).divideLocal(scale);
 //        rot.inverse().mult(store, store);
 

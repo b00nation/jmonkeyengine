@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2012 jMonkeyEngine
+ * Copyright (c) 2009-2018 jMonkeyEngine
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,7 +53,7 @@ public final class Skeleton implements Savable, JmeCloneable {
     private Bone[] boneList;
     
     /**
-     * Contains the skinning matrices, multiplying it by a vertex effected by a bone
+     * Contains the skinning matrices, multiplying it by a vertex affected by a bone
      * will cause it to go to the animated position.
      */
     private transient Matrix4f[] skinningMatrixes;
@@ -70,7 +70,7 @@ public final class Skeleton implements Savable, JmeCloneable {
     public Skeleton(Bone[] boneList) {
         this.boneList = boneList;
 
-        List<Bone> rootBoneList = new ArrayList<Bone>();
+        List<Bone> rootBoneList = new ArrayList<>();
         for (int i = boneList.length - 1; i >= 0; i--) {
             Bone b = boneList[i];
             if (b.getParent() == null) {
@@ -169,7 +169,7 @@ public final class Skeleton implements Savable, JmeCloneable {
     }
 
     /**
-     * Saves the current skeleton state as it's binding pose.
+     * Saves the current skeleton state as its binding pose.
      */
     public void setBindingPose() {
         for (int i = rootBones.length - 1; i >= 0; i--) {
@@ -289,6 +289,7 @@ public final class Skeleton implements Savable, JmeCloneable {
         return sb.toString();
     }
 
+    @Override
     public void read(JmeImporter im) throws IOException {
         InputCapsule input = im.getCapsule(this);
 
@@ -303,11 +304,13 @@ public final class Skeleton implements Savable, JmeCloneable {
         createSkinningMatrices();
 
         for (Bone rootBone : rootBones) {
+            rootBone.reset();
             rootBone.update();
             rootBone.setBindingPose();
         }
     }
 
+    @Override
     public void write(JmeExporter ex) throws IOException {
         OutputCapsule output = ex.getCapsule(this);
         output.write(rootBones, "rootBones", null);
